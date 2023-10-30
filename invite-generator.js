@@ -53,7 +53,6 @@ module.exports = {
 
   async execute(interaction) {
     await interaction.deferReply();
-    const icon = new AttachmentBuilder("attachment://theblondealexicon.png");
     //get the user data
     const comguild = interaction.member.guild.name;
     const comusername = `${interaction.user.username}#${interaction.user.discriminator}`;
