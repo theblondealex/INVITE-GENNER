@@ -20,4 +20,4 @@ This is a simple Discord bot that generates invite codes for your server. This b
 ## Usage
 
 1. Run the bot using the command `npm run dev`. This will start the bot using nodemon, which will automatically restart the bot whenever you make changes to the code.
-2. In your Discord server, type `!invite` to generate a new invite code. The bot will respond with a new invite code that you can use to invite people to your server.
+2. In your Discord server, type `/invite` to and fill out the fields to generate new invite codes. The bot will respond with a new invite code that you can use to invite people to your server.
