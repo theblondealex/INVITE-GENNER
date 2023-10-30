@@ -9,7 +9,7 @@
     "dev": "nodemon index.js"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@discordjs/rest": "^1.0.1",
     "discord.js": "^14.9.0",
