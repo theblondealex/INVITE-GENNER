@@ -1,3 +1,5 @@
+const fs = require("fs");
+const path = require("path");
 const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord.js");
 const { Client, Collection, GatewayIntentBits } = require("discord.js");
@@ -5,29 +7,34 @@ require("dotenv").config();
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-client.commands = new Collection();
-client.commands.set("invite-generator", require("./invite-generator.js"));
-
 const rest = new REST({ version: "10" }).setToken(process.env.BOTTOKEN);
 
-const commands = [];
-const command = require("./invite-generator.js");
-commands.push(command.data.toJSON());
+// Define the commands collection
+const commands = new Collection();
 
-const deploycommands = async () => {
-  try {
-    const data = await rest.put(
-      Routes.applicationCommands(process.env.CLIENTID),
-      {
-        body: commands,
-      }
-    );
-  } catch (error) {
-    console.log(error);
+async function deploycommands() {
+  const commandsPath = path.join(__dirname, "commands");
+  const commandFiles = fs
+    .readdirSync(commandsPath)
+    .filter((file) => file.endsWith(".js"));
+
+  for (const file of commandFiles) {
+    const filePath = path.join(commandsPath, file);
+    const { default: command } = await import(`file://${filePath}`);
+    commands.set(command.data.name, command); // Set the command in the collection
   }
-};
+
+  rest
+    .put(Routes.applicationCommands(process.env.CLIENTID), {
+      body: commands.map((command) => command.data.toJSON()),
+    })
+    .then(() => console.log(`Successfully registered Global commands.`));
+}
 
 deploycommands();
+
+// Assign the commands collection to the client
+client.commands = commands;
 
 client.on("interactionCreate", async (interaction) => {
   if (interaction.isChatInputCommand()) {
